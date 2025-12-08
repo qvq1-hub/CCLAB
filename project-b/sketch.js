@@ -2,6 +2,8 @@ let chatshaking = false;
 let tiktokshaking = false;
 let homescreen = 0;
 let cam;
+let currentWallpaper = 0; 
+let savedImg = null;
 
 let chapter1Screen = 0;
 let chapter2Screen = 0;
@@ -20,12 +22,16 @@ let img24, img25, img26, img27;
 let img28, img29, img30, img31;
 let img32;
 
+// Wallpaper variables
+let wallpaper1, wallpaper2, wallpaper3, wallpaper4;
+
+// Sound variables
 let clickSound;
 let chap1Music;
 let chap2Music;
 let chap5Music;
 let badEndMusic;
-let chap1GoodEndSound;
+let chap1GoodEnd1Sound;
 let chap1goodend2Sound;
 
 function preload() {
@@ -68,8 +74,8 @@ function preload() {
   img24 = loadImage("chap6page1.png");
   img25 = loadImage("chap6page2.png");
   img26 = loadImage("chap6badend.png");
-  img27 = loadImage("chap6badend.png");
-  img32 = loadImage("chap6goodend.png");
+  img27 = loadImage("chap6badend.png"); 
+  img32 = loadImage("chap6goodend.png"); 
 
   // Chapter 7
   img28 = loadImage("chap7page1.png");
@@ -77,14 +83,21 @@ function preload() {
   img30 = loadImage("chap7page3.png");
   img31 = loadImage("lastpage.png");
 
+  // Wallpapers
+  wallpaper1 = loadImage("wallpaper1.jpg");
+  wallpaper2 = loadImage("wallpaper2.png");
+  wallpaper3 = loadImage("wallpaper3.png");
+  wallpaper4 = loadImage("wallpaper4.jpeg");
+
   // Sounds
   clickSound = loadSound("whenmouseisclicked.mp3");
   chap1Music = loadSound("chap1music.mp3", soundLoaded);
   chap2Music = loadSound("chap2.mp3", soundLoaded);
   chap5Music = loadSound("chap5music.mp3", soundLoaded);
   badEndMusic = loadSound("allbadendmusic.mp3", soundLoaded);
-  chap1GoodEndSound = loadSound("chap1goodend1.mp3", soundLoaded);
+  chap1GoodEnd1Sound = loadSound("chap1goodend1.mp3", soundLoaded);
   chap1goodend2Sound = loadSound("chap1goodend2.mp3", soundLoaded);
+  chap4music = loadSound("chap4music.mp3", soundLoaded);
 }
 
 function soundLoaded() {
@@ -96,14 +109,14 @@ function setup() {
   cam = createCapture(VIDEO);
   cam.hide();
 
-  chap1Music.loop();
-  chap1Music.pause();
-  chap2Music.loop();
-  chap2Music.pause();
-  chap5Music.loop();
-  chap5Music.pause();
-  badEndMusic.loop();
-  badEndMusic.pause();
+  if (chap1Music && chap1Music.isLoaded) { chap1Music.loop(); chap1Music.pause(); }
+  if (chap2Music && chap2Music.isLoaded) { chap2Music.loop(); chap2Music.pause(); }
+  if (chap5Music && chap5Music.isLoaded) { chap5Music.loop(); chap5Music.pause(); }
+  if (badEndMusic && badEndMusic.isLoaded) { badEndMusic.loop(); badEndMusic.pause(); }
+
+  
+  if (chap1GoodEnd1Sound && chap1GoodEnd1Sound.isPlaying) chap1GoodEnd1Sound.stop();
+  if (chap1goodend2Sound && chap1goodend2Sound.isPlaying) chap1goodend2Sound.stop();
 }
 
 function draw() {
@@ -130,9 +143,15 @@ function draw() {
 }
 
 function drawStatusBar() {
-  let currentTime = "18:02";
   let currentBattery = "100%";
+  let currentTime = nf(hour(), 2, 0) + ":" + nf(minute(), 2, 0);
 
+  // Home / Tutorial / Camera use real time
+  if (homescreen === 0 || homescreen === 1 || homescreen === 2) {
+    currentTime = nf(hour(), 2, 0) + ":" + nf(minute(), 2, 0);
+  }
+
+  //  CHAPTER 1
   if (homescreen === 4) {
     if (chapter1Screen === 0 || chapter1Screen === 1 || chapter1Screen === 2) {
       currentTime = "18:15";
@@ -145,7 +164,9 @@ function drawStatusBar() {
       currentBattery = "80%";
     }
   }
-  else if (homescreen === 5) {
+
+  // CHAPTER 2
+  if (homescreen === 5) {
     if (chapter2Screen === 0 || chapter2Screen === 1) {
       currentTime = "21:10";
       currentBattery = "78%";
@@ -154,7 +175,9 @@ function drawStatusBar() {
       currentBattery = "65%";
     }
   }
-  else if (homescreen === 6) {
+
+  // CHAPTER 3 
+  if (homescreen === 6) {
     if (chapter3Screen === 0 || chapter3Screen === 2) {
       currentTime = "07:50";
       currentBattery = "60%";
@@ -163,7 +186,9 @@ function drawStatusBar() {
       currentBattery = "59%";
     }
   }
-  else if (homescreen === 7) {
+
+  // CHAPTER 4 
+  if (homescreen === 7) {
     if (chapter4Screen === 0 || chapter4Screen === 2) {
       currentTime = "08:15";
       currentBattery = "58%";
@@ -172,7 +197,9 @@ function drawStatusBar() {
       currentBattery = "57%";
     }
   }
-  else if (homescreen === 8) {
+
+  //  CHAPTER 5 
+  if (homescreen === 8) {
     if (chapter5Screen === 0) {
       currentTime = "08:50";
       currentBattery = "55%";
@@ -184,7 +211,9 @@ function drawStatusBar() {
       currentBattery = "40%";
     }
   }
-  else if (homescreen === 9) {
+
+  //  CHAPTER 6 
+  if (homescreen === 9) {
     if (chapter6Screen === 0) {
       currentTime = "17:15";
       currentBattery = "38%";
@@ -196,7 +225,9 @@ function drawStatusBar() {
       currentBattery = "36%";
     }
   }
-  else if (homescreen === 10) {
+
+  //CHAPTER 7 
+  if (homescreen === 10) {
     if (chapter7Screen === 0) {
       currentTime = "18:30";
       currentBattery = "25%";
@@ -212,6 +243,7 @@ function drawStatusBar() {
     }
   }
 
+  // STATUS BAR REAL TIME
   fill(0);
   textSize(18);
   text("No connection", 60, 73);
@@ -220,6 +252,7 @@ function drawStatusBar() {
   textSize(25);
   text("𓈚", 460, 70);
 }
+
 
 function handleMusic() {
   let isBadEndScreen = 
@@ -235,46 +268,81 @@ function handleMusic() {
       stopAllMusic();
       badEndMusic.play();
     }
-  } 
-  else if (homescreen === 4 && chapter1Screen === 0) {
+    return;
+  }
+
+  // Chapter 1 
+  if (homescreen === 4 && chapter1Screen === 0) {
     if (!chap1Music.isPlaying()) {
       stopAllMusic();
       chap1Music.play();
     }
-  }
-  else if (homescreen === 5 && chapter2Screen === 0) {
-    if (!chap2Music.isPlaying()) {
+    return;
+  } 
+
+  // Chapter1good end 1
+  if (homescreen === 4 && chapter1Screen === 3) {
+    if (!chap1GoodEnd1Sound.isPlaying()) {
       stopAllMusic();
-      chap2Music.play();
+      chap1GoodEnd1Sound.play();
     }
+    return;
   }
-  else if (homescreen === 8 && chapter5Screen === 0) {
-    if (!chap5Music.isPlaying()) {
-      stopAllMusic();
-      chap5Music.play(); 
-    }
-  }
-  else if (homescreen === 4 && chapter1Screen === 3) {
+
+  // Chapter 1 good end 2
+  if (homescreen === 4 && chapter1Screen === 4) {
     if (!chap1goodend2Sound.isPlaying()) {
       stopAllMusic();
       chap1goodend2Sound.play();
     }
+    return;
   }
-  else if (homescreen === 10 && chapter7Screen === 3) {
+
+  // Chapter 2 music
+  if (homescreen === 5 && chapter2Screen === 0) {
+    if (!chap2Music.isPlaying()) {
+      stopAllMusic();
+      chap2Music.play();
+    }
+    return;
+  }
+
+  // Chapter 4 music
+  if (homescreen === 7 && chapter4Screen === 0) {
+    if (!chap4music.isPlaying()) {
+      stopAllMusic();
+      chap4music.play();
+    }
+    return;
+  }
+
+  // Chapter 5 music
+  if (homescreen === 8 && chapter5Screen === 0) {
+    if (!chap5Music.isPlaying()) {
+      stopAllMusic();
+      chap5Music.play();
+    }
+    return;
+  }
+
+  // Chapter 7 final page
+  if (homescreen === 10 && chapter7Screen === 3) {
     stopAllMusic();
+    return;
   }
-  else {
-    stopAllMusic();
-  }
+
+  stopAllMusic();
 }
 
+
 function stopAllMusic() {
-  chap1Music.pause();
-  chap2Music.pause();
-  chap5Music.pause(); 
-  badEndMusic.pause();
-  chap1GoodEndSound.pause();
-  chap1goodend2Sound.pause();
+ 
+  if (chap1Music && chap1Music.isPlaying()) chap1Music.stop();
+  if (chap2Music && chap2Music.isPlaying()) chap2Music.stop();
+  if (chap5Music && chap5Music.isPlaying()) chap5Music.stop();
+  if (badEndMusic && badEndMusic.isPlaying()) badEndMusic.stop();
+  if (chap1GoodEnd1Sound && chap1GoodEnd1Sound.isPlaying()) chap1GoodEnd1Sound.stop();
+  if (chap1goodend2Sound && chap1goodend2Sound.isPlaying()) chap1goodend2Sound.stop();
 }
 
 function drawPhoneFrame() {
@@ -297,6 +365,9 @@ function drawHomeButton() {
 }
 
 function drawApps() {
+  let wallpapers = [wallpaper1, wallpaper2, wallpaper3, wallpaper4];
+  image(wallpapers[currentWallpaper], 48, 52, 455, 655);
+
   fill(0);
   textSize(18);
   text("camera", 84, 218);
@@ -357,14 +428,20 @@ function drawStoryLayer() {
 function drawCameraLayer() {
   fill(0);
   rect(275, 380, 455, 655);
+  image(cam, 50, 55, 450, 570);
+
   fill(255);
   rectMode(CENTER);
-  rect(width / 2, 630, 450, 5);
+  rect(width / 2, 630, 450, 5);  
+
   fill(180);
-  circle(width / 2, 670, 60);
+  circle(width / 2, 670, 60);    
   fill(0);
-  circle(width / 2, 670, 50);
-  image(cam, 50, 55, 450, 570);
+  circle(width / 2, 670, 50);   
+
+  if (savedImg != null) {
+    image(savedImg, 52, 638, 60, 60);  
+  }
 }
 
 function drawChapter1Layer() {
@@ -466,12 +543,12 @@ function drawChapter6Layer() {
   } else if (chapter6Screen === 1) {
     image(img25, 48, 52, 455, 655);
     fill(235); 
-    rect(180, 500, 200, 60); 
-    rect(180, 600, 200, 60); 
+    rect(380, 500, 200, 60); 
+    rect(380, 600, 200, 60); 
     fill(0); 
     textSize(27); 
-    text("convince them", 115, 510); 
-    text("say just kidding", 110, 610);
+    text("convince them", 300, 510); 
+    text("say just kidding", 290, 610);
   } else if (chapter6Screen === 2) {
     image(img26, 48, 52, 455, 655);
   } else if (chapter6Screen === 3) {
@@ -483,7 +560,7 @@ function drawChapter7Layer() {
   if (chapter7Screen === 0) {
     image(img28, 48, 52, 455, 655);
   } else if (chapter7Screen === 1) {
-    image(img29, 48, 52, 455, 655);
+    image(img29, 48, 52, 455, 655); 
   } else if (chapter7Screen === 2) {
     image(img30, 48, 52, 455, 655);
   } else if (chapter7Screen === 3) {
@@ -492,9 +569,12 @@ function drawChapter7Layer() {
 }
 
 function mousePressed() {
+
   if (clickSound && !clickSound.isPlaying()) clickSound.play();
 
+  // --------------------------
   // HOME BUTTON
+  // --------------------------
   let d = dist(mouseX, mouseY, 275, 755);
   if (d < 30) {
     homescreen = 0; 
@@ -509,87 +589,190 @@ function mousePressed() {
     return;
   }
 
+
+  // --------------------------
   // HOME SCREEN
+  // --------------------------
   if (homescreen === 0) {
-    if (mouseX > 40 && mouseX < 190 && mouseY > 220 && mouseY < 370) chatshaking = true;
-    if (mouseX > 200 && mouseX < 350 && mouseY > 220 && mouseY < 370) tiktokshaking = true;
-    if (mouseX > 200 && mouseX < 350 && mouseY > 70 && mouseY < 220) homescreen = 1;
-    if (mouseX > 40 && mouseX < 190 && mouseY > 70 && mouseY < 220) homescreen = 2;
-    if (mouseX > 360 && mouseX < 510 && mouseY > 70 && mouseY < 220) homescreen = 3;
+
+    let appClicked = false;
+
+    // Chat shake
+    if (mouseX > 40 && mouseX < 190 && mouseY > 220 && mouseY < 370) { 
+      chatshaking = true; 
+      appClicked = true; 
+    }
+
+    // TikTok shake
+    if (mouseX > 200 && mouseX < 350 && mouseY > 220 && mouseY < 370) { 
+      tiktokshaking = true; 
+      appClicked = true; 
+    }
+
+    // Tutorial
+    if (mouseX > 200 && mouseX < 350 && mouseY > 70 && mouseY < 220) { 
+      homescreen = 1; 
+      appClicked = true; 
+    }
+
+    // Camera
+    if (mouseX > 40 && mouseX < 190 && mouseY > 70 && mouseY < 220) { 
+      homescreen = 2; 
+      appClicked = true; 
+    }
+
+    // Story
+    if (mouseX > 360 && mouseX < 510 && mouseY > 70 && mouseY < 220) { 
+      homescreen = 3; 
+      appClicked = true; 
+    }
+
+    // Wallpaper tap
+    if (!appClicked) {
+      if (mouseX > 48 && mouseX < 503 && mouseY > 52 && mouseY < 707) {
+        currentWallpaper = (currentWallpaper + 1) % 4;
+      }
+    }
   }
 
-  // STORY → CHAPTER 1
-  if (homescreen === 3 && mouseX > 100 && mouseX < 450 && mouseY > 150 && mouseY < 350) { homescreen = 4; chapter1Screen = 0; }
+
+
+  // STORY 
+
+  if (homescreen === 3 && mouseX > 100 && mouseX < 450 && mouseY > 150 && mouseY < 350) { 
+    homescreen = 4; 
+    chapter1Screen = 0; 
+  }
+
+
+  
+  // CHAPTER 1
 
   if (homescreen === 4) {
+
     if (chapter1Screen === 0) {
       if (mouseX > 80 && mouseX < 280 && mouseY > 370 && mouseY < 430) { chapter1Screen = 1; return; }
       if (mouseX > 80 && mouseX < 280 && mouseY > 470 && mouseY < 530) { chapter1Screen = 3; return; }
     }
+
     if (chapter1Screen === 1) { chapter1Screen = 2; return; }
     if (chapter1Screen === 3) { chapter1Screen = 4; return; }
     if (chapter1Screen === 4) { homescreen = 5; chapter2Screen = 0; return; }
   }
 
+  // CHAPTER 2
+  
   if (homescreen === 5) {
+
     if (chapter2Screen === 0) {
       if (mouseX > 230 && mouseX < 430 && mouseY > 370 && mouseY < 430) chapter2Screen = 1;
       if (mouseX > 230 && mouseX < 430 && mouseY > 470 && mouseY < 530) chapter2Screen = 2;
-    } else if (chapter2Screen === 2) { homescreen = 6; chapter3Screen = 0; }
+    }
+    else if (chapter2Screen === 2) { 
+      homescreen = 6; 
+      chapter3Screen = 0; 
+    }
   }
 
+  // CHAPTER 3
+  
   if (homescreen === 6) {
+
     if (chapter3Screen === 0) {
       if (mouseX > 280 && mouseX < 480 && mouseY > 470 && mouseY < 530) { chapter3Screen = 1; return; }
       if (mouseX > 280 && mouseX < 480 && mouseY > 570 && mouseY < 630) { chapter3Screen = 2; return; }
-    } else if (chapter3Screen === 1) { homescreen = 7; chapter4Screen = 0; }
+    }
+    else if (chapter3Screen === 1) { 
+      homescreen = 7; 
+      chapter4Screen = 0; 
+    }
   }
 
+  // CHAPTER 4
+  
   if (homescreen === 7) {
+
     if (chapter4Screen === 0) {
       if (mouseX > 80 && mouseX < 280 && mouseY > 520 && mouseY < 580) { chapter4Screen = 1; return; }
       if (mouseX > 80 && mouseX < 280 && mouseY > 620 && mouseY < 680) { chapter4Screen = 2; return; }
-    } 
-    else if (chapter4Screen === 1) { homescreen = 8; chapter5Screen = 0; }
+    }
+    else if (chapter4Screen === 1) { 
+      homescreen = 8; 
+      chapter5Screen = 0; 
+    }
   }
 
+
+
+  // CHAPTER 5
+
   if (homescreen === 8) {
+
     if (chapter5Screen === 0) {
       if (mouseX > 280 && mouseX < 480 && mouseY > 420 && mouseY < 480) { chapter5Screen = 3; return; }
       if (mouseX > 280 && mouseX < 480 && mouseY > 520 && mouseY < 580) { chapter5Screen = 1; return; }
     }
     else if (chapter5Screen === 1) { chapter5Screen = 2; }
-    else if (chapter5Screen === 3) { homescreen = 9; chapter6Screen = 0; return; }
+    else if (chapter5Screen === 3) { 
+      homescreen = 9; 
+      chapter6Screen = 0; 
+      return; 
+    }
   }
 
+
+
+  // CHAPTER 6 
+ 
   if (homescreen === 9) {
+
+    // Page 1 
     if (chapter6Screen === 0) {
       chapter6Screen = 1;
       return;
-    } else if (chapter6Screen === 1) {
-      if (mouseX > 80 && mouseX < 280 && mouseY > 470 && mouseY < 530) {
+    }
+
+    if (chapter6Screen === 1) {
+      if (mouseX > 380 && mouseX < 580 && mouseY > 500 && mouseY < 560) {
         chapter6Screen = 2;
         return;
       }
-      if (mouseX > 80 && mouseX < 280 && mouseY > 570 && mouseY < 630) {
+
+      if (mouseX > 380 && mouseX < 580 && mouseY > 600 && mouseY < 660) {
         chapter6Screen = 3;
         return;
       }
-    } else if (chapter6Screen === 3) {
-      homescreen = 10; chapter7Screen = 0;
+    }
+
+    if (chapter6Screen === 3) {
+      homescreen = 10;
+      chapter7Screen = 0;
       return;
     }
   }
 
+
+
+  // CHAPTER 7
+
   if (homescreen === 10) {
-    if (chapter7Screen === 0) {
-      chapter7Screen = 1;
-      return;
-    } else if (chapter7Screen === 1) {
-      chapter7Screen = 2;
-      return;
-    } else if (chapter7Screen === 2) {
-      chapter7Screen = 3;
+
+    if (chapter7Screen === 0) { chapter7Screen = 1; return; }
+    if (chapter7Screen === 1) { chapter7Screen = 2; return; }
+    if (chapter7Screen === 2) { chapter7Screen = 3; return; }
+  }
+
+
+  
+  //SAVE PICTURE
+  if (homescreen === 2) {
+
+    let d = dist(mouseX, mouseY, width/2, 670);
+
+    if (d < 30) {
+      savedImg = createImage(cam.width, cam.height);
+      savedImg.copy(cam, 0, 0, cam.width, cam.height, 0, 0, cam.width, cam.height);
+      savedImg.save("photo", "png");
       return;
     }
   }

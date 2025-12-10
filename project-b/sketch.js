@@ -22,10 +22,10 @@ let img24, img25, img26, img27;
 let img28, img29, img30, img31;
 let img32;
 
-// Wallpaper variables
+// Wallpaper 
 let wallpaper1, wallpaper2, wallpaper3, wallpaper4;
 
-// Sound variables
+// Sound 
 let clickSound;
 let chap1Music;
 let chap2Music;
@@ -148,7 +148,7 @@ function drawStatusBar() {
   let currentBattery = "100%";
   let currentTime = nf(hour(), 2, 0) + ":" + nf(minute(), 2, 0);
 
-  // Home / Tutorial / Camera use real time
+  // Home + Camera  time
   if (homescreen === 0 || homescreen === 1 || homescreen === 2) {
     currentTime = nf(hour(), 2, 0) + ":" + nf(minute(), 2, 0);
   }

@@ -33,6 +33,7 @@ let chap5Music;
 let badEndMusic;
 let chap1GoodEnd1Sound;
 let chap1goodend2Sound;
+let lastpagemusic;
 
 function preload() {
   // Apps
@@ -98,6 +99,7 @@ function preload() {
   chap1GoodEnd1Sound = loadSound("chap1goodend1.mp3", soundLoaded);
   chap1goodend2Sound = loadSound("chap1goodend2.mp3", soundLoaded);
   chap4music = loadSound("chap4music.mp3", soundLoaded);
+  lastpagemusic = loadSound("lastpagemusic.wav", soundLoaded);
 }
 
 function soundLoaded() {
@@ -325,12 +327,14 @@ function handleMusic() {
     return;
   }
 
-  // Chapter 7 final page
-  if (homescreen === 10 && chapter7Screen === 3) {
+  // Chapter 7 last page
+ if (homescreen === 10 && (chapter7Screen === 2 || chapter7Screen === 3)) {
+  if (!lastpagemusic.isPlaying()) {
     stopAllMusic();
-    return;
+    lastpagemusic.play();
   }
-
+  return;
+}
   stopAllMusic();
 }
 
@@ -343,6 +347,7 @@ function stopAllMusic() {
   if (badEndMusic && badEndMusic.isPlaying()) badEndMusic.stop();
   if (chap1GoodEnd1Sound && chap1GoodEnd1Sound.isPlaying()) chap1GoodEnd1Sound.stop();
   if (chap1goodend2Sound && chap1goodend2Sound.isPlaying()) chap1goodend2Sound.stop();
+  if (lastpagemusic && lastpagemusic.isPlaying()) lastpagemusic.stop();
 }
 
 function drawPhoneFrame() {
@@ -352,6 +357,7 @@ function drawPhoneFrame() {
   rect(255, 30, 50, 8);
   circle(300, 30, 8);
 }
+
 
 function drawPhoneScreen() {
   fill(220);
@@ -569,12 +575,9 @@ function drawChapter7Layer() {
 }
 
 function mousePressed() {
-
   if (clickSound && !clickSound.isPlaying()) clickSound.play();
-
-  // --------------------------
   // HOME BUTTON
-  // --------------------------
+
   let d = dist(mouseX, mouseY, 275, 755);
   if (d < 30) {
     homescreen = 0; 
@@ -589,10 +592,7 @@ function mousePressed() {
     return;
   }
 
-
-  // --------------------------
   // HOME SCREEN
-  // --------------------------
   if (homescreen === 0) {
 
     let appClicked = false;
@@ -634,18 +634,12 @@ function mousePressed() {
       }
     }
   }
-
-
-
   // STORY 
 
   if (homescreen === 3 && mouseX > 100 && mouseX < 450 && mouseY > 150 && mouseY < 350) { 
     homescreen = 4; 
     chapter1Screen = 0; 
   }
-
-
-  
   // CHAPTER 1
 
   if (homescreen === 4) {
@@ -743,16 +737,12 @@ function mousePressed() {
         return;
       }
     }
-
     if (chapter6Screen === 3) {
       homescreen = 10;
       chapter7Screen = 0;
       return;
     }
   }
-
-
-
   // CHAPTER 7
 
   if (homescreen === 10) {
@@ -762,8 +752,6 @@ function mousePressed() {
     if (chapter7Screen === 2) { chapter7Screen = 3; return; }
   }
 
-
-  
   //SAVE PICTURE
   if (homescreen === 2) {
 
